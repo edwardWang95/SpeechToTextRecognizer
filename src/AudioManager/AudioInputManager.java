@@ -1,3 +1,5 @@
+package AudioManager;
+
 import javax.sound.sampled.*;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -5,6 +7,11 @@ import java.io.IOException;
 
 /**
  * Get audio input and break down the audio based on changes in db.
+ *
+ *
+ * TODO:
+ * -add handler for silence in audio file --> check link in Jarvis bookmark folder
+ *
  * Created by edwardwang on 3/30/16.
  */
 public class AudioInputManager {
@@ -19,13 +26,13 @@ public class AudioInputManager {
     private AudioFormat audioFormat;
 
     private AudioInputStream inputStream;
-    private ByteArrayOutputStream outpuStream;
+    private ByteArrayOutputStream outputStream;
     private int bufferSize;
     private byte[] memoryBuffer;
     private byte[] audioByteArray;
 
 
-    //private AudioInputManager(){}     Do i need this blank constructor?
+    private AudioInputManager(){}
 
     private void setAudioFile(File audioFile) throws IOException, UnsupportedAudioFileException {
         this.audioFile = audioFile;
@@ -47,7 +54,7 @@ public class AudioInputManager {
             getFileFormat();
             setupStreams();
             writeMemoryBufferToOutputStream();
-            audioByteArray = outpuStream.toByteArray();
+            audioByteArray = outputStream.toByteArray();
         }
     }
 
@@ -68,7 +75,7 @@ public class AudioInputManager {
      */
     private void setupStreams() throws IOException, UnsupportedAudioFileException {
         inputStream = AudioSystem.getAudioInputStream(audioFile);
-        outpuStream = new ByteArrayOutputStream();
+        outputStream = new ByteArrayOutputStream();
         bufferSize = BUFFER_LENGTH * audioFormat.getFrameSize();    //Get memory buffer size from given audio format
         memoryBuffer = new byte[bufferSize];
     }
@@ -81,7 +88,7 @@ public class AudioInputManager {
         int bytesRead = 0;
         while(bytesRead != -1){
             bytesRead = inputStream.read(memoryBuffer);
-            outpuStream.write(memoryBuffer, 0, bytesRead);
+            outputStream.write(memoryBuffer, 0, bytesRead);
         }
     }
 
