@@ -22,9 +22,19 @@ public class AudioInputManager {
     private ByteArrayOutputStream outpuStream;
     private int bufferSize;
     private byte[] memoryBuffer;
+    private byte[] audioByteArray;
 
 
-    private AudioInputManager(){}
+    //private AudioInputManager(){}     Do i need this blank constructor?
+
+    private void setAudioFile(File audioFile) throws IOException, UnsupportedAudioFileException {
+        this.audioFile = audioFile;
+        createAudioFileByteArray();
+    }
+
+    private byte[] getAudioByteArray(){
+        return audioByteArray;
+    }
 
     /**
      * Write the memory buffer of the audioInputStream to the byteArrayOutputStream.
@@ -32,12 +42,13 @@ public class AudioInputManager {
      * @throws IOException
      * @throws UnsupportedAudioFileException
      */
-    private byte[] getAudioFileByteArray(File audioFile) throws IOException, UnsupportedAudioFileException {
-        this.audioFile = audioFile;
-        getFileFormat();
-        setupStreams();
-        writeMemoryBufferToOutputStream();
-        return outpuStream.toByteArray();
+    private void createAudioFileByteArray() throws IOException, UnsupportedAudioFileException {
+        if(audioFile != null){
+            getFileFormat();
+            setupStreams();
+            writeMemoryBufferToOutputStream();
+            audioByteArray = outpuStream.toByteArray();
+        }
     }
 
     /**
